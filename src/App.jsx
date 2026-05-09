@@ -1,15 +1,18 @@
-import {Space} from 'antd'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import MainLayout from './layouts/MainLayout';
+import Home from './pages/Home';
+import Animal from './pages/Animal';
 
-function App() {
-
+export default function App() {
   return (
-    <div>
-      <Space size='large'>
-        <h1>Brian</h1>
-        <h1>Diana</h1>
-      </Space>
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        {/* ✅ 所有页面都用同一个布局 */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/animal" element={<Animal />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default App
