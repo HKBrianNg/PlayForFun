@@ -25,7 +25,8 @@ import {
 } from '@mui/icons-material'
 import { Link, Outlet } from 'react-router-dom'
 
-const drawerWidth = 240
+const drawerWidthOpen = 240
+const drawerWidthClosed = 60
 
 export default function MainLayout() {
   const [open, setOpen] = useState(true)
@@ -43,61 +44,33 @@ export default function MainLayout() {
   return (
     <Box sx={{ display: 'flex', width: '100%', height: '100vh', overflow: 'hidden' }}>
       
-      {/* 顶部导航栏 */}
-      <AppBar
-        position="fixed"
-        sx={{
-          width: open ? `calc(100% - ${drawerWidth}px)` : '100%',
-          ml: open ? `${drawerWidth}px` : 0,
-          boxShadow: 'none',
-          bgcolor: '#1976d2',
-        }}
-      >
-        <Toolbar>
-          <IconButton color="inherit" onClick={toggleDrawer} edge="start" sx={{ mr: 2 }}>
-            {open ? <ChevronLeft /> : <MenuIcon />}
-          </IconButton>
-
-          <Box sx={{
-            position: 'relative', bgcolor: 'rgba(255,255,255,0.15)',
-            px: 2, py: 0.5, borderRadius: 1, display: 'flex',
-            alignItems: 'center', flex: 1, maxWidth: '400px',
-          }}>
-            <Search sx={{ color: 'white', mr: 1 }} />
-            <InputBase placeholder="搜索…" sx={{ color: 'white', width: '100%' }} />
-          </Box>
-
-          <Box sx={{ flexGrow: 1 }} />
-
-          <IconButton onClick={handleMenu}>
-            <Avatar sx={{ bgcolor: '#fff', color: '#1976d2' }}>U</Avatar>
-          </IconButton>
-          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-            <MenuItem onClick={handleClose}>个人中心</MenuItem>
-            <MenuItem onClick={handleClose}>退出登录</MenuItem>
-          </Menu>
-        </Toolbar>
-      </AppBar>
-
-      {/* 左侧菜单 */}
+      {/* 左侧侧边栏 */}
       <Drawer
         variant="permanent"
         open={open}
         sx={{
-          width: open ? drawerWidth : 64,
+          width: open ? drawerWidthOpen : drawerWidthClosed,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: open ? drawerWidth : 64,
+            width: open ? drawerWidthOpen : drawerWidthClosed,
             boxSizing: 'border-box',
-            transition: 'width 0.2s',
+            transition: 'width 0.2s ease',
             overflowX: 'hidden',
             bgcolor: '#1976d2',
             color: '#fff',
           },
         }}
       >
-        <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', px: 2 }}>
-          <Typography variant="h6" sx={{ opacity: open ? 1 : 0, whiteSpace: 'nowrap' }}>
+        <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', px: 1 }}>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              opacity: open ? 1 : 0, 
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              color: '#fff'
+            }}
+          >
             控制台
           </Typography>
         </Toolbar>
@@ -105,47 +78,102 @@ export default function MainLayout() {
 
         <List>
           {menuItems.map((item) => (
-            <ListItem
-              button
-              key={item.text}
-              component={Link}
+            <ListItem 
+              button 
+              key={item.text} 
+              component={Link} 
               to={item.path}
               sx={{
-                minHeight: '48px',
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+                minHeight: 48,
+                justifyContent: open ? 'flex-start' : 'center',
+                px: open ? 2 : 0,
+                overflow: 'hidden',
               }}
             >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 2 : 'auto',
-                  justifyContent: 'center',
+              <ListItemIcon 
+                sx={{ 
+                  minWidth: open ? 40 : '100%',
                   color: '#fff',
+                  justifyContent: 'center'
                 }}
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, color: '#fff' }} />
+              {/* 🔥 文字强制白色 + 折叠完全隐藏 */}
+              <ListItemText 
+                primary={item.text} 
+                sx={{ 
+                  color: '#fff !important',
+                  opacity: open ? 1 : 0,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden'
+                }} 
+              />
             </ListItem>
           ))}
         </List>
       </Drawer>
 
-      {/* 🔥 内容区域：强制纵向滚动条 */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          mt: 8,
-          bgcolor: '#f5f5f5',
-          height: 'calc(100vh - 64px)',
-          overflowY: 'scroll',    /* 强制显示纵向滚动条 */
-          overflowX: 'hidden',    /* 禁止横向滚动 */
-        }}
-      >
+      {/* 顶部导航 */}
+      <AppBar position="fixed" sx={{
+        width: `calc(100% - ${open ? drawerWidthOpen : drawerWidthClosed}px)`,
+        ml: open ? drawerWidthOpen : drawerWidthClosed,
+        boxShadow: 'none',
+        bgcolor: '#1976d2',
+        transition: 'margin-left 0.2s ease, width 0.2s ease',
+      }}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            onClick={toggleDrawer}
+            edge="start"
+            sx={{ mr: 2 }}
+          >
+            {open ? <ChevronLeft /> : <MenuIcon />}
+          </IconButton>
+
+          <Box sx={{ 
+            bgcolor: 'rgba(255,255,255,0.15)', 
+            px: 2, py: 0.5, 
+            borderRadius: 1, 
+            display: 'flex', 
+            alignItems: 'center', 
+            flex: 1, 
+            maxWidth: '400px' 
+          }}>
+            <Search sx={{ color: 'white', mr: 1 }} />
+            <InputBase 
+              placeholder="搜索…" 
+              sx={{ color: 'white', width: '100%' }} 
+            />
+          </Box>
+
+          <Box sx={{ flexGrow: 1 }} />
+
+          <IconButton onClick={handleMenu}>
+            <Avatar sx={{ bgcolor: '#fff', color: '#1976d2' }}>U</Avatar>
+          </IconButton>
+          <Menu 
+            anchorEl={anchorEl} 
+            open={Boolean(anchorEl)} 
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>个人中心</MenuItem>
+            <MenuItem onClick={handleClose}>退出登录</MenuItem>
+          </Menu>
+        </Toolbar>
+      </AppBar>
+
+      {/* 内容区域 */}
+      <Box component="main" sx={{
+        flexGrow: 1,
+        p: 3,
+        mt: 8,
+        bgcolor: '#f5f5f5',
+        height: 'calc(100vh - 64px)',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+      }}>
         <Outlet />
       </Box>
     </Box>
