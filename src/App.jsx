@@ -7,7 +7,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* ✅ 所有页面都用同一个布局 */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/animal" element={<Animal />} />
