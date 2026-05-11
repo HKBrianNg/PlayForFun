@@ -1,12 +1,16 @@
+import { Typography, Box } from '@mui/material'
+
 export default function Home() {
   return (
-    <div>
-      <h1>首页</h1>
-      {Array.from({ length: 50 }).map((_, i) => (
-        <div key={i} style={{ height: '50px' }}>
+    <Box>
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        首页
+      </Typography>
+      {Array.from({ length: 30 }).map((_, i) => (
+        <Box key={i} sx={{ py: 1 }}>
           测试内容 {i + 1}
-        </div>
+        </Box>
       ))}
-    </div>
-  );
+    </Box>
+  )
 }

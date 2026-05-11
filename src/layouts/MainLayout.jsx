@@ -1,81 +1,153 @@
-// src/layouts/MainLayout.jsx
-import { useState } from 'react';
-import { Layout, Menu, Avatar, Dropdown, Input } from 'antd';
+import { useState } from 'react'
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
+  Box,
+  Drawer,
+  AppBar,
+  Toolbar,
+  List,
+  Typography,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  InputBase,
+  Avatar,
+  Menu,
+  MenuItem,
+} from '@mui/material'
+import {
+  Menu as MenuIcon,
   HomeOutlined,
-  PictureOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import { Link, Outlet } from 'react-router-dom';
-import 'antd/dist/reset.css';
+  ImageOutlined,
+  Search,
+  ChevronLeft,
+} from '@mui/icons-material'
+import { Link, Outlet } from 'react-router-dom'
 
-const { Header, Sider, Content } = Layout;
+const drawerWidth = 240
 
 export default function MainLayout() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [open, setOpen] = useState(true)
+  const [anchorEl, setAnchorEl] = useState(null)
 
-  const userMenu = [
-    { key: 'profile', label: '个人中心' },
-    { key: 'logout', label: '退出登录' },
-  ];
+  const toggleDrawer = () => setOpen(!open)
+  const handleMenu = (event) => setAnchorEl(event.currentTarget)
+  const handleClose = () => setAnchorEl(null)
 
   const menuItems = [
-    { key: '1', icon: <HomeOutlined />, label: <Link to="/">首页</Link> },
-    { key: '2', icon: <PictureOutlined />, label: <Link to="/animal">动物图片</Link> },
-  ];
+    { text: '首页', icon: <HomeOutlined />, path: '/' },
+    { text: '动物图片', icon: <ImageOutlined />, path: '/animal' },
+  ]
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex' }}>
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        theme="dark"
-        style={{ height: '100%' }}
+    <Box sx={{ display: 'flex', width: '100%', height: '100vh', overflow: 'hidden' }}>
+      
+      {/* 顶部导航栏 */}
+      <AppBar
+        position="fixed"
+        sx={{
+          width: open ? `calc(100% - ${drawerWidth}px)` : '100%',
+          ml: open ? `${drawerWidth}px` : 0,
+          boxShadow: 'none',
+          bgcolor: '#1976d2',
+        }}
       >
-        <div style={{ height: 32, margin: '16px 0' }} />
+        <Toolbar>
+          <IconButton color="inherit" onClick={toggleDrawer} edge="start" sx={{ mr: 2 }}>
+            {open ? <ChevronLeft /> : <MenuIcon />}
+          </IconButton>
 
-        {/* ✅ 最强修复：直接给菜单加左边距！绝对生效 */}
-        <div style={{ paddingLeft: '10px' }}>
-          <Menu
-            theme="dark"
-            mode="inline"
-            items={menuItems}
-          />
-        </div>
+          <Box sx={{
+            position: 'relative', bgcolor: 'rgba(255,255,255,0.15)',
+            px: 2, py: 0.5, borderRadius: 1, display: 'flex',
+            alignItems: 'center', flex: 1, maxWidth: '400px',
+          }}>
+            <Search sx={{ color: 'white', mr: 1 }} />
+            <InputBase placeholder="搜索…" sx={{ color: 'white', width: '100%' }} />
+          </Box>
 
-      </Sider>
+          <Box sx={{ flexGrow: 1 }} />
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Header style={{
-          background: '#1677ff',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '0 20px',
-          height: 64,
-        }}>
-          <div onClick={() => setCollapsed(!collapsed)} style={{ color: '#fff' }}>
-            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          </div>
-          <Input placeholder="搜索" style={{ width: 260 }} />
-          <Dropdown menu={{ items: userMenu }}>
-            <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
-          </Dropdown>
-        </Header>
+          <IconButton onClick={handleMenu}>
+            <Avatar sx={{ bgcolor: '#fff', color: '#1976d2' }}>U</Avatar>
+          </IconButton>
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+            <MenuItem onClick={handleClose}>个人中心</MenuItem>
+            <MenuItem onClick={handleClose}>退出登录</MenuItem>
+          </Menu>
+        </Toolbar>
+      </AppBar>
 
-        <Content style={{
-          flex: 1,
-          padding: '24px',
-          background: '#fff',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-        }}>
-          <Outlet />
-        </Content>
-      </div>
-    </div>
-  );
+      {/* 左侧菜单 */}
+      <Drawer
+        variant="permanent"
+        open={open}
+        sx={{
+          width: open ? drawerWidth : 64,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: open ? drawerWidth : 64,
+            boxSizing: 'border-box',
+            transition: 'width 0.2s',
+            overflowX: 'hidden',
+            bgcolor: '#1976d2',
+            color: '#fff',
+          },
+        }}
+      >
+        <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', px: 2 }}>
+          <Typography variant="h6" sx={{ opacity: open ? 1 : 0, whiteSpace: 'nowrap' }}>
+            控制台
+          </Typography>
+        </Toolbar>
+        <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)' }} />
+
+        <List>
+          {menuItems.map((item) => (
+            <ListItem
+              button
+              key={item.text}
+              component={Link}
+              to={item.path}
+              sx={{
+                minHeight: '48px',
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 2 : 'auto',
+                  justifyContent: 'center',
+                  color: '#fff',
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, color: '#fff' }} />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+
+      {/* 🔥 内容区域：强制纵向滚动条 */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          mt: 8,
+          bgcolor: '#f5f5f5',
+          height: 'calc(100vh - 64px)',
+          overflowY: 'scroll',    /* 强制显示纵向滚动条 */
+          overflowX: 'hidden',    /* 禁止横向滚动 */
+        }}
+      >
+        <Outlet />
+      </Box>
+    </Box>
+  )
 }
