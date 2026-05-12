@@ -39,6 +39,7 @@ export default function MainLayout() {
   const menuItems = [
     { text: 'Home', icon: <HomeOutlined />, path: '/' },
     { text: 'Day 1', icon: <ImageOutlined />, path: '/day1' },
+    { text: 'Day 2', icon: <ImageOutlined />, path: '/day2' },
   ]
 
   return (
@@ -158,8 +159,9 @@ export default function MainLayout() {
             open={Boolean(anchorEl)} 
             onClose={handleClose}
           >
-            <MenuItem onClick={handleClose}>个人中心</MenuItem>
-            <MenuItem onClick={handleClose}>退出登录</MenuItem>
+            <MenuItem onClick={handleClose}>Setting</MenuItem>
+            <MenuItem onClick={handleClose}>Login</MenuItem>
+            <MenuItem onClick={handleClose}>Logout</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
