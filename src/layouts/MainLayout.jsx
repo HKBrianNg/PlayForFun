@@ -37,8 +37,8 @@ export default function MainLayout() {
   const handleClose = () => setAnchorEl(null)
 
   const menuItems = [
-    { text: '首页', icon: <HomeOutlined />, path: '/' },
-    { text: '动物图片', icon: <ImageOutlined />, path: '/animal' },
+    { text: 'Home', icon: <HomeOutlined />, path: '/' },
+    { text: 'Day 1', icon: <ImageOutlined />, path: '/day1' },
   ]
 
   return (
@@ -71,7 +71,7 @@ export default function MainLayout() {
               color: '#fff'
             }}
           >
-            控制台
+            Play For Fun
           </Typography>
         </Toolbar>
         <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)' }} />
@@ -143,7 +143,7 @@ export default function MainLayout() {
           }}>
             <Search sx={{ color: 'white', mr: 1 }} />
             <InputBase 
-              placeholder="搜索…" 
+              placeholder="Search…" 
               sx={{ color: 'white', width: '100%' }} 
             />
           </Box>
